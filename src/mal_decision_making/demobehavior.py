@@ -29,39 +29,93 @@ class Demobehavior(object):
 
         while not rospy.is_shutdown():
 
-
             leg_order = LegServoMovement()
-            leg_order.placement = LegServoMovement.PLACE_RIGHT
-            leg_order.wise      = LegServoMovement.WISE_RIGHT
-            self.leg_pub.publish(leg_order)
+            isMoveLeg = random.randint(0, 100)
 
-            leg_order = LegServoMovement()
-            leg_order.placement = LegServoMovement.PLACE_LEFT
-            leg_order.wise      = LegServoMovement.WISE_RIGHT
-            self.leg_pub.publish(leg_order)
+            placement_randomize = random.randint(0, 2)
+            wise_randomize = random.randint(0, 2)
 
-            leg_order = LegServoMovement()
-            leg_order.placement = LegServoMovement.PLACE_BACK
-            leg_order.wise      = LegServoMovement.WISE_RIGHT
-            self.leg_pub.publish(leg_order)
+            leg_stopped = True
 
-            
+            if isMoveLeg < 50:
+
+                num_of_place = random.randint(1, 3)
+
+                for i in xrange(0, num_of_place):
+
+                    if placement_randomize == 0:
+                        leg_order.placement = LegServoMovement.PLACE_RIGHT
+
+                    if placement_randomize == 1:
+                        leg_order.placement = LegServoMovement.PLACE_LEFT
+
+                    if placement_randomize == 2:
+                        leg_order.placement = LegServoMovement.PLACE_BACK
+
+                    if wise_randomize == 0:
+                        leg_order.wise      = LegServoMovement.WISE_RIGHT
+
+                    if wise_randomize == 1:
+                        leg_order.wise      = LegServoMovement.WISE_LEFT
+
+                    if wise_randomize == 2:
+                        leg_order.wise      = LegServoMovement.WISE_STOP
+
+                    rospy.loginfo("==================== Base Moving")
+                    rospy.loginfo(leg_order)
+
+                    self.leg_pub.publish(leg_order)
+
+            else:
+                rospy.loginfo("==================== Base Stop")
+
+                leg_order.placement = LegServoMovement.PLACE_RIGHT
+                leg_order.wise      = LegServoMovement.WISE_STOP
+                self.leg_pub.publish(leg_order)
+
+
+                leg_order.placement = LegServoMovement.PLACE_LEFT
+                leg_order.wise      = LegServoMovement.WISE_STOP
+                self.leg_pub.publish(leg_order)
+
+                leg_order.placement = LegServoMovement.PLACE_BACK
+                leg_order.wise      = LegServoMovement.WISE_STOP
+                self.leg_pub.publish(leg_order)
+
+                #leg_stopped = True
+                
+
             arm_order = ArmServoMovement()
-            arm_order.servo_num = random.randint(0, 2)
+            isMoveArm = random.randint(0, 100)
+            if isMoveArm < 100:
 
-            movement = random.randint(0, 2)
+                rospy.loginfo("==================== Arm Moving")
+                arm_order.servo_num = random.randint(0, 2)
 
-            if movement == 0:
-                arm_order.movement = ArmServoMovement.FORWARD
+                movement = random.randint(0, 2)
 
-            if movement == 1:
-                arm_order.movement = ArmServoMovement.BACK
+                if movement == 0:
+                    arm_order.movement = ArmServoMovement.FORWARD
 
-            if movement == 2:
+                if movement == 1:
+                    arm_order.movement = ArmServoMovement.BACK
+
+                if movement == 2:
+                    arm_order.movement = ArmServoMovement.STOP
+
+                rospy.loginfo(arm_order)
+
+                self.arm_pub.publish(arm_order)
+                self.r.sleep()
+            else:
+                rospy.loginfo("==================== Arm Stopping")
                 arm_order.movement = ArmServoMovement.STOP
+                self.arm_pub.publish(arm_order)
+                
+            #self.r.sleep()
 
-            self.arm_pub.publish(arm_order)
-            self.r.sleep()
+            time.sleep(random.randint(0, 3))
+                
 
 
 if __name__ == '__main__':

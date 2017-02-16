@@ -13,13 +13,13 @@ from mal_msgs.msg import (
     Movement
     )
 
-class Demobehavior(object):
+class LocalController(object):
 
     ARM_SERVO_TOPIC = "/mal_control/control_arm_servo"
     LEG_SERVO_TOPIC = "/mal_control/control_leg_servo"
     MOVEMENT_TOPIC = "/mal_control/command"
 
-    def __init__(self, node_name="demobehavior", fps=30):
+    def __init__(self, node_name="local_controller", fps=30):
         rospy.init_node(node_name)
         self.r = rospy.Rate(fps)
 
@@ -30,19 +30,24 @@ class Demobehavior(object):
     def main(self):
 
         mov = [Movement.FRONT, Movement.FRONT_LEFT, Movement.FRONT_RIGHT, Movement.BACK, Movement.BACK_LEFT, Movement.BACK_RIGHT, Movement.ROLL_RIGHT, Movement.ROLL_LEFT, Movement.STOP]
-        mov_count = 0
+        mov_count = 0 
+        mov_duration = 500
         while not rospy.is_shutdown():
+
+            print "plz type of direction"
+            mov_count = int(raw_input())
+            print "plz type of duration"
+            mov_duration = int(raw_input())
 
             print "Current Movement : " + str(mov_count)
             
             movement = Movement()
             movement.movement = mov[mov_count]
-            movement.duration = random.randint(2, 5)
+            movement.duration = mov_duration / 1000.0
             self.move_pub.publish(movement)
-            
-            time.sleep(random.randint(10, 100))
-            
-            mov_count = random.randint(0, 5)
+
+            time.sleep(1)
+
                 
 if __name__ == '__main__':
     dh = Demobehavior()

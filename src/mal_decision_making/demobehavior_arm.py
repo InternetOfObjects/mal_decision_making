@@ -38,6 +38,7 @@ class DemobehaviorArm(object):
             if isMoveArm < 100:
 
                 rospy.loginfo("==================== Arm Moving")
+                
                 arm_order.servo_num = random.randint(0, 2)
 
                 movement = random.randint(0, 2)
@@ -56,7 +57,6 @@ class DemobehaviorArm(object):
                 self.arm_pub.publish(arm_order)
                 self.r.sleep()
             else:
-                rospy.loginfo("==================== Arm Stopping")
                 arm_order.movement = ArmServoMovement.STOP
                 self.arm_pub.publish(arm_order)
                 

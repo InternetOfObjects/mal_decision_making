@@ -34,13 +34,14 @@ class Demobehavior(object):
         while not rospy.is_shutdown():
 
             print "Current Movement : " + str(mov_count)
-            
+
+            duration = random.randint(2, 5)
             movement = Movement()
             movement.movement = mov[mov_count]
-            movement.duration = random.randint(2, 5)
+            movement.duration = duration
             self.move_pub.publish(movement)
             
-            time.sleep(random.randint(10, 100))
+            time.sleep(duration + 1)
             
             mov_count = random.randint(0, 5)
                 
